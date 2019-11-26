@@ -67,4 +67,82 @@ void printHex(std::vector<uint8_t> input)
 		std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)el;
 	std::cout << '\n';
 }
+
+void switchEndianness(std::vector<uint8_t>& b)
+{
+	std::reverse(b.begin(), b.end());
+}
+
+int hexstringToIntArray(std::string const& hexstring, uint8_t result[])
+{
+	if (hexstring.size() % 2) {
+		std::cerr << "The hexstring is not an even number of characters.\n";
+		exit(EXIT_FAILURE);
+	}
+	
+	size_t resultLength = hexstring.size() / 2;
+	size_t i = 0;
+	for (auto it = hexstring.begin(); it != hexstring.end(); it = it + 2) {
+		int sixteens = hexDigitToInt(*it);
+		int units = hexDigitToInt(*std::next(it));
+		if (sixteens == -1 || units == -1) {
+			return -1;
+		}
+		result[i] = (sixteens << 4) | units;
+		i++;
+	}
+	return resultLength;
+}
+
+/**
+ * Print a string as hexadecimal values.
+ *
+ * */ 
+void printStringToHex(std::string s)
+{
+	for(size_t i = 0; i < s.size(); i++) {
+		std::cout << std::hex << std::setfill('0') << std::setw(2) << (int)s[i];
+	}
+	std::cout << '\n';
+}
+
+/**
+ *
+ * return a hex string representation of the value of an integer
+ *
+ * */ 
+std::string intToHexString(int num)
+{
+	std::stringstream ss;
+	ss << std::hex << num;
+	return ss.str();
+}
+
+/**
+ * Convert an int to a hexadecimal string, using arithmetic.
+ *
+ * */
+std::string intToHexString2(int num)
+{
+	const char hexChars[] = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
+	std::string result;
+	while (num) {
+		char tmp = hexChars[num % 16];
+		result.insert(result.begin(), tmp);
+		num /= 16;
+	}
+	return result;
+}
+
+/**
+ * Build a hex string representation of bytes.
+ * 
+ * */
+void charToHexString(const char& c, std::string& s)
+{
+	std::stringstream ss;
+	ss << std::setfill('0') << std::setw(2) << std::hex << (0xff & (int)c);
+	s.append(ss.str());
+}
+
 } // End HashUtilities
